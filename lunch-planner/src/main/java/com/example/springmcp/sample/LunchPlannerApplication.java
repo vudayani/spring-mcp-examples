@@ -2,6 +2,7 @@ package com.example.springmcp.sample;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 import org.springframework.ai.chat.client.ChatClient;
@@ -30,12 +31,27 @@ public class LunchPlannerApplication {
 		return args -> {
 			var chatClient = chatClientBuilder.defaultFunctions(functionCallbacks.toArray(new McpFunctionCallback[0]))
 					.build();
+			
+			var scanner = new Scanner(System.in);
+			System.out.println("\nWelcome to the Lunch Planner Assistant! I’m here to help you plan your lunch outing and notify your team. Provide a location, any food preferences, and the Slack channel to post to. Type 'exit' to end the session at any time.");
 
-			System.out.println("Running predefined questions with AI model responses:\n");
+			try {
+				while (true) {
+					System.out.print("\nUser: ");
+					String input = scanner.nextLine();
 
-			String question1 = "Find a vegetarian-friendly restaurant within 2 miles of my office address (MG Road, bangalore). Then let everyone in #lunch-plans on Slack know we’re meeting there at 12:30 PM.";
-			System.out.println("QUESTION: " + question1);
-			System.out.println("ASSISTANT: " + chatClient.prompt(question1).call().content());
+					if (input.equalsIgnoreCase("exit")) {
+						System.out.println("Ending the chat session.");
+						break;
+					}
+
+					System.out.print("Assistent: ");
+					System.out.println(chatClient.prompt(input).call().content());
+				}
+			} finally {
+				scanner.close();
+				context.close();
+			}
 
 			context.close();
 
