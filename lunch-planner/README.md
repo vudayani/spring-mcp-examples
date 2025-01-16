@@ -41,8 +41,11 @@ By leveraging these MCP servers, the application demonstrates how an AI assistan
    export GOOGLE_MAPS_API_KEY='your-google-maps-api-key'
    export SLACK_BOT_TOKEN='your-slack-api-key'
    ```
+   - Fetch the Google Maps API key by following the instructions [here](https://developers.google.com/maps/documentation/javascript/get-api-key#create-api-keys)
+   - Setup and fetch slack api token by following the instructions [here](https://github.com/modelcontextprotocol/servers/blob/main/src/slack/README.md#setup)
+   
 
-4. Build the application:
+5. Build the application:
    ```bash
    ./mvnw clean install
    ```
@@ -80,9 +83,9 @@ When the application is started:
 
 1. MCP Client Initialization:
 
-- The Spring MCP client are created to establish connections to the MCP servers (Google Maps and Slack)
+- The Spring MCP clients are created to establish connections to the MCP servers (Google Maps and Slack)
 
-- The MCP client queries each server to discover the available tools
+- The MCP clients query the servers to discover the available tools
 
 2. Function Callbacks Registration:
 
@@ -98,7 +101,7 @@ When the application is started:
 
 The Flow:
 
-1.User Prompt: The user provides a natural language prompt specifying location criteria and announcement details
+1. User Prompt: The user provides a natural language prompt specifying location criteria and announcement details
 
 2. ChatClient Interaction: The ChatClient interacts with the LLM (OpenAI in this case) to handle the entire flow. It analyzes the prompt and identifies which tools to invoke
 
