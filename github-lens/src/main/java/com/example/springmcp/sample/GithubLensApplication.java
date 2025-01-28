@@ -55,8 +55,8 @@ public class GithubLensApplication {
 		var githubMcpClient = ServerParameters.builder("npx").args("-y", "@modelcontextprotocol/server-github")
 				.addEnvVar("GITHUB_PERSONAL_ACCESS_TOKEN", System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")).build();
 
-		var mcpClient = McpClient.using(new StdioClientTransport(githubMcpClient))
-				.requestTimeout(Duration.ofSeconds(10)).sync();
+		var mcpClient = McpClient.sync(new StdioClientTransport(githubMcpClient))
+				.requestTimeout(Duration.ofSeconds(10)).build();
 
 		var init = mcpClient.initialize();
 
@@ -74,12 +74,12 @@ public class GithubLensApplication {
 				.addEnvVar("SLACK_BOT_TOKEN", System.getenv("SLACK_BOT_TOKEN"))
 				.addEnvVar("SLACK_TEAM_ID", System.getenv("SLACK_TEAM_ID")).build();
 
-		var mcpClient = McpClient.using(new StdioClientTransport(slackParams)).requestTimeout(Duration.ofSeconds(10))
-				.sync();
+		var mcpClient = McpClient.sync(new StdioClientTransport(slackParams)).requestTimeout(Duration.ofSeconds(10))
+				.build();
 
 		var init = mcpClient.initialize();
 
-		System.out.println("MCP slack serveriInitialized: " + init);
+		System.out.println("MCP slack server initialized: " + init);
 
 		return mcpClient;
 

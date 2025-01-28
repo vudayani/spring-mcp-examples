@@ -26,7 +26,7 @@ public class DailySummaryJob {
 	public void fetchAndSendGitSummary() {
 		try {
 			System.out.println(chatClient.
-					prompt().system(s -> s.text(dailySummaryPrompt).params(Map.of("repoName","blogging-platform", "repoOwner", "venkat-vmv")))
+					prompt().user(u -> u.text(dailySummaryPrompt).params(Map.of("repoName","blogging-platform", "repoOwner", "venkat-vmv")))
 					.advisors(new SimpleLoggerAdvisor()).call().content());
 		} catch (Exception e) {
 			System.err.println("Error fetching daily github summary: " + e.getMessage());

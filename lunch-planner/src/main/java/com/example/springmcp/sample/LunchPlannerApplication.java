@@ -78,8 +78,8 @@ public class LunchPlannerApplication {
 		var googleMapsParams = ServerParameters.builder("npx").args("-y", "@modelcontextprotocol/server-google-maps")
 				.addEnvVar("GOOGLE_MAPS_API_KEY", System.getenv("GOOGLE_MAPS_API_KEY")).build();
 
-		var mcpClient = McpClient.using(new StdioClientTransport(googleMapsParams))
-				.requestTimeout(Duration.ofSeconds(10)).sync();
+		var mcpClient = McpClient.sync(new StdioClientTransport(googleMapsParams))
+				.requestTimeout(Duration.ofSeconds(10)).build();
 
 		var init = mcpClient.initialize();
 
@@ -97,8 +97,8 @@ public class LunchPlannerApplication {
 				.addEnvVar("SLACK_BOT_TOKEN", System.getenv("SLACK_BOT_TOKEN"))
 				.addEnvVar("SLACK_TEAM_ID", System.getenv("SLACK_TEAM_ID")).build();
 
-		var mcpClient = McpClient.using(new StdioClientTransport(slackParams)).requestTimeout(Duration.ofSeconds(10))
-				.sync();
+		var mcpClient = McpClient.sync(new StdioClientTransport(slackParams)).requestTimeout(Duration.ofSeconds(10))
+				.build();
 
 		var init = mcpClient.initialize();
 
