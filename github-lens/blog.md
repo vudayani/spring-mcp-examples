@@ -1,11 +1,11 @@
 # Model Context Protocol: Unlocking the True Potential od AI workflows with Spring AI
 
-Model Context Protocol (MCP) is an open source project initiated by Anthropic, PBC and it has been making waves in the AI community. This blog will explore MCP, a protocol designed to simplify how Large Language Models (LLMs) integrate with tools, data, and workflows to fetch the context they need. We'll discuss what MCP is, why it has garnered so much attention, and how it empowers developers to create sophisticated AI applications. We'll also take a closer look at how Spring AI adopted MCP, enabling developers to leverage this technology seamlessly. Finally, I'll introduce GitHub Lens, a demo application I built using Spring AI MCP, to showcase how easy it is to build powerful AI-driven tools with MCP.
+Model Context Protocol (MCP) is an open source project initiated by Anthropic, PBC and it has been making waves in the AI community. This blog will explore MCP, a protocol designed to simplify how Large Language Models (LLMs) integrate with tools, data, and workflows to fetch the context they need. We'll discuss what MCP is, why it has garnered so much attention, and how it empowers developers to create sophisticated AI applications. We'll also take a closer look at how Spring AI adopted MCP, enabling developers to leverage this technology seamlessly. Finally, I'll introduce GitHub Lens, a demo application I built using Spring AI MCP, to showcase how easy it is to build powerful AI-driven applications with MCP.
 
 ## What is Model Context Protocol?
 
 The Model Context Protocol (MCP) is an open standard designed with the goal of addressing a major challenge in the AI Space: enabling LLMs to interact seamlessly with external tools, data sources, and systems.
-By standardizing the way AI models connect to external systems, MCP simplifies the integration process, allowing LLMs to fetch the precise context they need to perform tasks effectively. In essence, MCP acts as a universal interface between LLMs and the outside world. This opens up exciting possibilities for developers, as they no longer need to rely on fragmented, custom integrations for every data source or system their AI models need to interact with.
+By standardizing the way AI models connect to external systems, MCP simplifies the integration process, allowing LLMs to fetch the precise context they need to perform tasks effectively. This opens up exciting possibilities for developers, as they no longer need to rely on fragmented, custom integrations for every data source or system their AI models need to interact with.
 
 At its core, MCP allows developers to:
 - Tap into an ever-expanding collection of [pre-built integrations](https://github.com/modelcontextprotocol/servers) for popular tools and platforms, saving time and effort in building integrations
@@ -29,17 +29,12 @@ Sounds simple enough, right? But here’s where the challenge arises: Each of th
 
 MCP solves this problem by acting as a universal bridge that connects LLMs to various tools, data sources, and APIs through a standardized protocol. Here’s how it works:
 
-**Servers:** MCP servers expose data and tools (e.g., databases, APIs, private repositories) in a standardized way that the LLM can understand
-MCP is more than just a tool for integration — it’s a framework for exposing new sources of data to LLMs. Developers can create MCP servers that follow the protocol to securely provide access to private or proprietary data that isn’t natively available to the LLM. For example:
-- You can expose data from your internal HR system to help an AI assistant answer employee queries
-- Connect to on-premises databases to analyze sensitive financial data while keeping it secure
-- Build custom workflows that span across public tools like GitHub and private systems like your company’s file storage
+**MCP Servers:** MCP servers expose data and tools (e.g., databases, APIs, private repositories) in a standardized way that the LLM can understand.
+Developers can create MCP servers that follow the protocol to provide access to private or proprietary data that may not be natively accessible to the LLM, whether it’s internal HR data, financial information, or custom workflows that span across public tools like GitHub and private systems like your company’s file storage.
 
-**Clients:** MCP clients act as intermediaries, facilitating communication between the LLM and these servers
+**MCP Clients:** MCP clients act as intermediaries, facilitating communication between the LLM and these servers
 
-**LLM Decision-Making:** The LLM doesn’t need you to tell it which server or API to use. It can autonomously decide which data source to query based on the request and fetch the relevant information to enhance its response.
-By plugging your private or external data sources into MCP servers, the LLM gains access to dynamic, real-time data that it can use to generate more accurate, actionable, and context-aware responses. And all of this happens seamlessly and you no longer need to write custom integrations or worry about constantly updating your codebase
-
+**LLM Decision-Making:** Instead of manually specifying which server or API to use, LLMs can autonomously decide which data source to query based on the task at hand. With MCP, LLMs can fetch real-time, context-aware information to generate more accurate responses. And all of this happens seamlessly and you no longer need to write custom integrations or worry about constantly updating your codebase
 
 ## MCP: Unlocking Limitless Possibilities for AI Applications
 MCP is paving the way for a new era of AI-driven workflows, where LLMs can seamlessly integrate into real-world systems, accessing the information they need to solve problems in ways we never thought possible. It creates an ecosystem where LLMs don’t just rely on outdated training data—they dynamically fetch real-world, real-time information using natural language interfaces.
@@ -79,8 +74,12 @@ By combining multiple MCP servers, you can automate workflows that were previous
 
 Now imagine the LLM orchestrating these interactions. With a single natural language command like, “Set up my app locally and deploy it to staging,” the LLM could seamlessly coordinate between these servers and execute the workflow for you.
 
-## MCP: Widening Horizons for AI Applications
-MCP isn't just about simplifying integrations. It opens doors to building intelligent agents, complex workflows and automations on top of LLMs. It enables developers to combine multiple tools, APIs, and data sources into cohesive workflows. This is particularly valuable in a world where LLMs are becoming central to everything from automating tasks to decision-making.
+
+
+### MCP: Widening Horizons for AI Applications
+
+MCP isn’t just about simplifying integrations.It opens doors to building intelligent agents, complex workflows and automations on top of LLMs. By combining tools, APIs, and data sources, developers can build more powerful, context-aware AI applications, from automating tasks to enabling smarter decision-making.
+
 
 ## Spring AI's Adoption of MCP
 
