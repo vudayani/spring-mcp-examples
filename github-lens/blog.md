@@ -1,6 +1,6 @@
 # Model Context Protocol: Unlocking the True Potential od AI workflows with Spring AI
 
-Model Context Protocol (MCP) is an open source project initiated by Anthropic, PBC and it has been making waves in the AI community. This blog will explore MCP, a protocol designed to simplify how Large Language Models (LLMs) integrate with tools, data, and workflows to fetch the context they need. We'll discuss what MCP is, why it has garnered so much attention, and how it empowers developers to create sophisticated AI applications. We'll also take a closer look at how Spring AI adopted MCP, enabling developers to leverage this technology seamlessly. Finally, I'll introduce GitHub Lens, a demo application I built using Spring AI MCP, to showcase how easy it is to build powerful AI-driven applications with MCP.
+Model Context Protocol (MCP) is an open source project initiated by Anthropic, PBC and it has been making waves in the AI community. This blog will explore MCP, a protocol designed to simplify how Large Language Models (LLMs) integrate with tools, data, and workflows to fetch the context they need. We'll discuss what MCP is, why it has garnered so much attention, and how it empowers developers to create sophisticated AI applications. We'll also take a closer look at how Spring AI adopted MCP, enabling developers to leverage this technology seamlessly. Finally, we will take a look at GitHub Lens, a demo application built using Spring AI MCP, to showcase how easy it is to build powerful AI-driven applications with MCP.
 
 ## What is Model Context Protocol?
 
@@ -73,8 +73,6 @@ By combining multiple MCP servers, you can automate workflows that were previous
 - A GitHub MCP server could track your pull requests or fetch commit history
 
 Now imagine the LLM orchestrating these interactions. With a single natural language command like, “Set up my app locally and deploy it to staging,” the LLM could seamlessly coordinate between these servers and execute the workflow for you.
-
-
 
 ### MCP: Widening Horizons for AI Applications
 
@@ -187,7 +185,24 @@ spring:
            model: "gpt-4o"
 ```
 
-### 3. MCP Client setup
+### 3. Use a Forked GitHub MCP Server for Full Functionality:
+
+The public [GitHub MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) provides essential functionality to interact with repositories, such as fetching and creating commits, issues. However, it does not expose all necessary tools for complete pull request management, including fetching pull requests, reviewers, merge status, and review comments.
+
+To ensure full functionality in the GitHub Lens project, we need to use a customized version of the GitHub MCP server that exposes these missing tools. This involves:
+
+- Clonning the forked repository which exposes the additional tools for pull request operations
+- Building the MCP Server locally
+- Pointing Spring MCP client to the local GitHub server
+
+```bash
+git clone https://github.com/vudayani/servers.git
+cd servers/src/github
+npm install
+```
+With this setup, the github-lens application can now fully leverage pull request operation.
+
+### 4. MCP Client setup
 
 To connect with the GitHub and Slack MCP servers, we need to create MCP clients. These clients act as intermediaries between your Spring AI application and the MCP servers, enabling seamless communication. Below is the setup for the GitHub and Slack MCP clients, along with an explanation of how they work.
 
@@ -196,7 +211,7 @@ To connect with the GitHub and Slack MCP servers, we need to create MCP clients.
 	McpSyncClient githubMcpClient() {
 
 		// based on https://github.com/modelcontextprotocol/servers/tree/main/src/github
-		var githubMcpClient = ServerParameters.builder("npx").args("-y", "@modelcontextprotocol/server-github")
+		var githubMcpClient = ServerParameters.builder("npx").args("-y", "/path/to/local/servers/src/github")
 				.addEnvVar("GITHUB_PERSONAL_ACCESS_TOKEN", System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")).build();
 
 		var mcpClient = McpClient.sync(new StdioClientTransport(githubMcpClient))
@@ -230,6 +245,8 @@ To connect with the GitHub and Slack MCP servers, we need to create MCP clients.
 	}
 ```
 
+**Note:** Update the local server path(`/path/to/local/servers/src/github`) based on your actual directory for the github server parameters
+
 Let us break down this code:
 
 - Server Parameters Configuration: The `ServerParameters.builder()` configures the MCP server parameters to be executed via `npx`
@@ -251,7 +268,7 @@ Let us break down this code:
 - Initializing the Connection: The initialize() method establishes the connection to the MCP server and verifies that the server is running correctly
 - Graceful Shutdown: The @Bean(destroyMethod = "close") annotation ensures that the MCP client is properly closed when the Spring application shuts down
 
-### 4. Function Callbacks
+### 5. Function Callbacks
 
 When the application starts, the mcpClient automatically fetches a list of tools available from the MCP server. These tools represent the capabilities exposed by the server, such as fetching GitHub data or sending messages to Slack. To make these tools accessible to the AI model, we need to register them as function callbacks.
 
@@ -282,7 +299,7 @@ This transformation acts as a bridge between the tools exposed by the MCP server
 
 Finally, the GitHub and Slack callbacks are combined into a single list, which is registered as a Spring Bean
 
-### 5. Chat Client Integration
+### 6. Chat Client Integration
 
 The next step is integrating them with the ChatClient. The ChatClient acts as the interface between the application and the LLMs, enabling it to leverage the tools exposed by the MCP servers. Thanks to Spring's dependency injection, this integration is seamless, requiring minimal setup.
 
@@ -297,7 +314,7 @@ Let us register the function callbacks created from the MCP tools, enabling the 
 ```
 The LLM now has access to all registered MCP tools, allowing it to dynamically decide when and how to invoke them, removing the need for developers to manually orchestrate these interactions.
 
-### 6. Bringing It All Together: Generating the Daily GitHub Summary
+### 7. Bringing It All Together: Generating the Daily GitHub Summary
 
 Now that we have everything set up—MCP clients, function callbacks, and the ChatClient—it’s time to build our application logic. Our goal is to summarize GitHub activity daily and send a structured update to Slack.
 
@@ -392,7 +409,6 @@ Finally, the LLM directs the application to post the summary to the #dev-updates
 
 Below is the end result— Slack message posted to the channel:
 
-[TO BE REPLACED]
 ![Summary Results](../github-lens/src/main/resources/git-summary-message.png)
 
 
