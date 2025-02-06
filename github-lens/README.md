@@ -41,13 +41,52 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
    npm install -g npx
    ```
 
-2. Clone the repository:
+2. Using a Forked GitHub MCP Server for Full Functionality:
+
+The public [GitHub MCP Server]((https://github.com/modelcontextprotocol/servers/tree/main/src/github)) currently doesn't expose some tools for pull request operations. To ensure full functionality in the GitHub-Lens project, follow these steps to fork, build, and use the customized version of the GitHub MCP server.
+
+2.1 Clone the forked repository which exposes the additional tools for pull request operations:
+
+```bash
+git clone https://github.com/vudayani/servers.git
+```
+
+2.2 Build the GitHub MCP Server
+Ensure Node.js and npm are installed before proceeding.
+
+```bash
+cd src/github
+npm install
+```
+
+2.3 Configure Spring MCP parameters to use the local github mcp server
+
+Modify the GitHub MCP client configuration in your Spring Boot application to point to the local server.
+
+```java
+	@Bean(destroyMethod = "close")
+	McpSyncClient githubMcpClient() {
+		// based on https://github.com/modelcontextprotocol/servers/tree/main/src/github
+		var githubMcpClient = ServerParameters.builder("npx")
+            .args("-y", "/Users/vudayani/Desktop/Spring-ai/mcp-servers-clone/servers/src/github")
+				.addEnvVar("GITHUB_PERSONAL_ACCESS_TOKEN", System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"))
+            .build();
+		var mcpClient = McpClient.sync(new StdioClientTransport(githubMcpClient))
+				.requestTimeout(Duration.ofSeconds(10))
+            .build();
+		var init = mcpClient.initialize();
+		return mcpClient;
+	}
+```
+**Note:** Update the local server path based on your actual directory.
+
+3. Clone the repository:
    ```bash
    git clone https://github.com/vudayani/spring-mcp-examples.git
    cd github-lens
    ```
 
-3. Set up your API keys:
+4. Set up your API keys:
    ```bash
    export OPENAI_API_KEY='your-openai-api-key'
    export GITHUB_PERSONAL_ACCESS_TOKEN='your-github-personal-access-token'
@@ -56,27 +95,12 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
    ```
 For more information on fetching the tokens, please refer the MCP server documentation [here](https://github.com/modelcontextprotocol/servers/tree/main/src)
 
-4. Build the application:
+5. Build the application:
    ```bash
    ./mvnw clean install
    ```
    
-5. Run the application using Maven:
+6. Run the application using Maven:
 	```bash
 	./mvnw spring-boot:run
 	```
-
-
-## Dependencies
-
-1. Spring Boot 3.4.1
-
-2. Spring AI 1.0.0-M5
-
-3. Spring AI MCP Spring 0.4.1
-
-4. OpenAI Spring Boot Starter
-
-
-
-
