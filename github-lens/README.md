@@ -6,15 +6,18 @@ GitHub Lens provides real-time insights, daily summaries, and automated reminder
 
 ## Features
 
+- Daily summaries: Receive a concise digest of commits. open pull requests and issues 
+- Automated reminders: Stay on track with notifications for overdue PRs, pending approvals, and priority issues
+
 ## How It Works
 
 GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitHub and Slack MCP servers. It uses an LLM (Large Language Model) to:
 
-1. Understand prompts and generate meaningful insights
+1. LLM-powered insights: Understand prompts and generate meaningful insights
 
-2. Automatically call tools from GitHub and Slack MCP servers
+2. MCP Tool Calling: Automatically invokes tools from GitHub and Slack MCP servers to fetch data or trigger actions.
 
-3. Deliver summaries, reminders, and updates directly to Slack
+3. Automated Notifications: Deliver summaries, reminders, and updates directly to Slack
 
 ## Architecture Overview
 
@@ -28,9 +31,10 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
 - Java 17 or higher
 - Maven 3.6+
 - npx package manager
-- OpenAI API key
+- OpenAI API Key
 - Github API Key
-- Slack API Key
+- Slack Bot Token
+- Slack Team Id
 
 ## Setup
 
@@ -59,32 +63,53 @@ cd src/github
 npm install
 ```
 
-2.3 Configure Spring MCP parameters to use the local github mcp server
+2.3 Note the directory path, as it will be needed in the next step to configure the Spring MCP client to point to the local GitHub MCP server
 
-Modify the GitHub MCP client configuration in your Spring Boot application to point to the local server.
-
-```java
-	@Bean(destroyMethod = "close")
-	McpSyncClient githubMcpClient() {
-		// based on https://github.com/modelcontextprotocol/servers/tree/main/src/github
-		var githubMcpClient = ServerParameters.builder("npx")
-            .args("-y", "/Users/vudayani/Desktop/Spring-ai/mcp-servers-clone/servers/src/github")
-				.addEnvVar("GITHUB_PERSONAL_ACCESS_TOKEN", System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"))
-            .build();
-		var mcpClient = McpClient.sync(new StdioClientTransport(githubMcpClient))
-				.requestTimeout(Duration.ofSeconds(10))
-            .build();
-		var init = mcpClient.initialize();
-		return mcpClient;
-	}
+```bash
+pwd
 ```
-**Note:** Update the local server path based on your actual directory.
 
 3. Clone the repository:
-   ```bash
+```bash
    git clone https://github.com/vudayani/spring-mcp-examples.git
    cd github-lens
-   ```
+```
+
+4. Configure MCP Servers
+Spring AI MCP simplifies MCP client setup by using Spring boot's auto-configuration to setup the MCP client.
+
+Let us take a look at our configuration for Github and Slack MCP servers. Instead of manually defining MCP clients in Java, we simply configure them in an external file (`mcp-servers-config.json`) as below:
+
+```yaml
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "/path/to/local/servers/src/github"
+      ],
+      "env": {
+		"GITHUB_PERSONAL_ACCESS_TOKEN": "your-api-key",
+      }
+    },
+	"slack": {
+	  "command": "npx",
+	  "args": [
+	    "-y",
+	    "@modelcontextprotocol/server-slack"
+	 ],
+	 "env": {
+		"SLACK_BOT_TOKEN": "slack-bot-token",
+        "SLACK_TEAM_ID": "slack-team-id"
+	 }
+	}
+  }
+}
+```
+
+**Note:** Update the local server path(`/path/to/local/servers/src/github`) based on your actual directory fetched in the previous step in the github server arguments.
+
 
 4. Set up your API keys:
    ```bash
@@ -93,7 +118,9 @@ Modify the GitHub MCP client configuration in your Spring Boot application to po
    export SLACK_BOT_TOKEN='your-slack-api-key'
    export SLACK_TEAM_ID='your-slack-team-id`
    ```
-For more information on fetching the tokens, please refer the MCP server documentation [here](https://github.com/modelcontextprotocol/servers/tree/main/src)
+For detailed instructions on fetching your API tokens:
+- Refer to the [GitHub MCP Server documentation](https://github.com/modelcontextprotocol/servers/tree/main/src/github)
+- Refer to the [Slack MCP Server documentation](https://github.com/modelcontextprotocol/servers/tree/main/src/slack)
 
 5. Build the application:
    ```bash

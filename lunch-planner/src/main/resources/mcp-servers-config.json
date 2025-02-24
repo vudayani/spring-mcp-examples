@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "google-maps": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-google-maps"
+      ],
+      "env": {
+      }
+    },
+	"slack": {
+	  "command": "npx",
+	  "args": [
+	    "-y",
+	    "@modelcontextprotocol/server-slack"
+	 ],
+	 "env": {
+	 }
+	}
+  }
+}

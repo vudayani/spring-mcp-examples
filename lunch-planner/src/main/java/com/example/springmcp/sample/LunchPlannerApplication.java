@@ -1,16 +1,9 @@
 package com.example.springmcp.sample;
 
-import java.time.Duration;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.mcp.client.McpClient;
-import org.springframework.ai.mcp.client.McpSyncClient;
-import org.springframework.ai.mcp.client.transport.ServerParameters;
-import org.springframework.ai.mcp.client.transport.StdioClientTransport;
-import org.springframework.ai.mcp.spring.McpFunctionCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,10 +19,11 @@ public class LunchPlannerApplication {
 
 	@Bean
 	CommandLineRunner predefinedQuestions(ChatClient.Builder chatClientBuilder,
-			List<McpFunctionCallback> functionCallbacks, ConfigurableApplicationContext context) {
+			ToolCallbackProvider tools, ConfigurableApplicationContext context) {
 
 		return args -> {
-			var chatClient = chatClientBuilder.defaultFunctions(functionCallbacks.toArray(new McpFunctionCallback[0]))
+			var chatClient = chatClientBuilder
+					.defaultTools(tools)
 					.build();
 			
 			var scanner = new Scanner(System.in);
@@ -56,56 +50,6 @@ public class LunchPlannerApplication {
 			context.close();
 
 		};
-	}
-
-	@Bean
-	List<McpFunctionCallback> functionCallbacks(McpSyncClient googleMapMcpClient, McpSyncClient slackMcpClient) {
-
-		var googleMapCallbacks = googleMapMcpClient.listTools(null).tools().stream()
-				.map(tool -> new McpFunctionCallback(googleMapMcpClient, tool)).toList();
-
-		var slackCallbacks = slackMcpClient.listTools(null).tools().stream()
-				.map(tool -> new McpFunctionCallback(slackMcpClient, tool)).toList();
-
-		return Stream.concat(googleMapCallbacks.stream(), slackCallbacks.stream()).toList();
-	}
-
-	@Bean(destroyMethod = "close")
-	McpSyncClient googleMapMcpClient() {
-
-		// based on
-		// https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps
-		var googleMapsParams = ServerParameters.builder("npx").args("-y", "@modelcontextprotocol/server-google-maps")
-				.addEnvVar("GOOGLE_MAPS_API_KEY", System.getenv("GOOGLE_MAPS_API_KEY")).build();
-
-		var mcpClient = McpClient.sync(new StdioClientTransport(googleMapsParams))
-				.requestTimeout(Duration.ofSeconds(10)).build();
-
-		var init = mcpClient.initialize();
-
-		System.out.println("MCP Initialized: " + init);
-
-		return mcpClient;
-
-	}
-
-	@Bean(destroyMethod = "close")
-	McpSyncClient slackMcpClient() {
-
-		// based on https://github.com/modelcontextprotocol/servers/tree/main/src/slack
-		var slackParams = ServerParameters.builder("npx").args("-y", "@modelcontextprotocol/server-slack")
-				.addEnvVar("SLACK_BOT_TOKEN", System.getenv("SLACK_BOT_TOKEN"))
-				.addEnvVar("SLACK_TEAM_ID", System.getenv("SLACK_TEAM_ID")).build();
-
-		var mcpClient = McpClient.sync(new StdioClientTransport(slackParams)).requestTimeout(Duration.ofSeconds(10))
-				.build();
-
-		var init = mcpClient.initialize();
-
-		System.out.println("MCP Initialized: " + init);
-
-		return mcpClient;
-
 	}
 
 }
