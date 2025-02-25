@@ -67,6 +67,18 @@ Once running, the application will:
 
 3. Post the finalized plan to a Slack channel
 
+### Example:
+
+Below is the User prompt:
+
+```bash
+User: "Find a vegan restaurant within 2 miles in jp nagar. Then let everyone in #lunch-plans on Slack know we’re meeting there at 1:30 PM."
+```
+
+Below is the slack notification:
+
+![Lunch Planner Notification](../lunch-planner/src/main/resources/lunch-updates.png)
+
 ## How It Works
 
 Spring AI MCP simplifies AI-driven workflows by automating MCP client setup using Spring Boot’s auto-configuration. With `spring-ai-mcp-client-spring-boot-starter`, developers no longer need to manually define MCP clients, Spring AI takes care of everything, enabling seamless tool invocation.
