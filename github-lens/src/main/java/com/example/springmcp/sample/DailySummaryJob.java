@@ -18,18 +18,35 @@ public class DailySummaryJob {
 	@Value("classpath:/prompts/dailySummaryPrompt.st")
     private Resource dailySummaryPrompt;
 	
+	@Value("classpath:/prompts/actionItemsPrompt.st")
+    private Resource actionItemsPrompt;
+	
 	@Scheduled(cron = "0 0 8 * * *")
 	public void fetchAndSendGitSummary() {
 		try {
-			String response = chatClient
-					.prompt()
-					.user(u -> u.text(dailySummaryPrompt)
-							.params(Map.of("repoName","blogging-platform", "repoOwner", "venkat-vmv")))
-					.call().content();
-			System.out.println(response);
+			chatClient
+				.prompt()
+				.user(u -> u.text(dailySummaryPrompt)
+					.params(Map.of("repoName", "blogging-platform", "repoOwner", "venkat-vmv")))
+				.call().content();
 		} catch (Exception e) {
 			System.err.println("Error fetching GitHub Summary for repository: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
+	
+	@Scheduled(cron = "0 0 8 * * *")
+	public void fetchActionItemsAndSendRemainders() {
+		try {
+			System.out.println(chatClient.
+					prompt()
+					.user(u -> u.text(actionItemsPrompt)
+							.params(Map.of("repoName","blogging-platform", "repoOwner", "venkat-vmv")))
+					.call().content());
+		} catch (Exception e) {
+			System.err.println("Error fetching github action items: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 }
