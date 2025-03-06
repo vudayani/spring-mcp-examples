@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "/Users/vudayani/Desktop/Spring-ai/mcp-servers-clone/ud-fork/servers/src/github"
+        "@modelcontextprotocol/server-github"
       ],
       "env": {
       }
