@@ -25,6 +25,8 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
 
 [Slack MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/slack): Posts summaries and notifications to Slack channels.
 
+![Github Summary Architecture](../github-lens/src/main/resources/images/github-lens-arch.png)
+
 
 ## Prerequisites
 
@@ -45,37 +47,13 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
    npm install -g npx
    ```
 
-2. Using a Forked GitHub MCP Server for Full Functionality:
-
-The public [GitHub MCP Server]((https://github.com/modelcontextprotocol/servers/tree/main/src/github)) currently doesn't expose some tools for pull request operations. To ensure full functionality in the GitHub-Lens project, follow these steps to fork, build, and use the customized version of the GitHub MCP server.
-
-2.1 Clone the forked repository which exposes the additional tools for pull request operations:
-
-```bash
-git clone https://github.com/vudayani/servers.git
-```
-
-2.2 Build the GitHub MCP Server
-Ensure Node.js and npm are installed before proceeding.
-
-```bash
-cd src/github
-npm install
-```
-
-2.3 Note the directory path, as it will be needed in the next step to configure the Spring MCP client to point to the local GitHub MCP server
-
-```bash
-pwd
-```
-
-3. Clone the repository:
+2. Clone the repository:
 ```bash
    git clone https://github.com/vudayani/spring-mcp-examples.git
    cd github-lens
 ```
 
-4. Configure MCP Servers
+3. Configure MCP Servers
 Spring AI MCP simplifies MCP client setup by using Spring boot's auto-configuration to setup the MCP client.
 
 Let us take a look at our configuration for Github and Slack MCP servers. Instead of manually defining MCP clients in Java, we simply configure them in an external file (`mcp-servers-config.json`) as below:
@@ -87,29 +65,26 @@ Let us take a look at our configuration for Github and Slack MCP servers. Instea
       "command": "npx",
       "args": [
         "-y",
-        "/path/to/local/servers/src/github"
+        "@modelcontextprotocol/server-github"
       ],
       "env": {
-		"GITHUB_PERSONAL_ACCESS_TOKEN": "your-api-key",
+		  "GITHUB_PERSONAL_ACCESS_TOKEN": "your-api-key",
       }
     },
-	"slack": {
-	  "command": "npx",
-	  "args": [
-	    "-y",
-	    "@modelcontextprotocol/server-slack"
-	 ],
-	 "env": {
-		"SLACK_BOT_TOKEN": "slack-bot-token",
+	 "slack": {
+	   "command": "npx",
+	   "args": [
+	     "-y",
+	     "@modelcontextprotocol/server-slack"
+	   ],
+	   "env": {
+		  "SLACK_BOT_TOKEN": "slack-bot-token",
         "SLACK_TEAM_ID": "slack-team-id"
+	   }
 	 }
-	}
   }
 }
 ```
-
-**Note:** Update the local server path(`/path/to/local/servers/src/github`) based on your actual directory fetched in the previous step in the github server arguments.
-
 
 4. Set up your API keys:
    ```bash
