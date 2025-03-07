@@ -1,6 +1,6 @@
 # Model Context Protocol: Unlocking AI’s Full Potential with Spring AI
 
-The Model Context Protocol (MCP) is a game-changer in AI integration, enabling Large Language Models (LLMs) to seamlessly connect with tools, data sources, and workflows. Developed by Anthropic, MCP provides a standardized and composable way for AI applications to fetch real-time, context-aware information, eliminating the need for custom integrations.
+The Model Context Protocol (MCP) is revolutionizing AI integration by enabling Large Language Models (LLMs) to seamlessly connect with tools, data sources, and workflows. Developed by Anthropic, MCP eliminates the need for custom integrations by providing a standardized and composable way for AI applications to fetch real-time, context-aware information.
 
 In this blog, we’ll explore:
 
@@ -15,7 +15,7 @@ Instead of manually wiring integrations and data retrieval logic, developers can
 
 ## Why MCP?
 
-In the rapidly evolving field of artificial intelligence, LLMs are only as good as the data they have access to. Traditionally, integrating LLMs with external tools and data has been a daunting challenge. Let's say you’re building an AI-powered assistant for your organization that needs to:
+In the rapidly evolving field of artificial intelligence, LLMs are only as good as the data they have access to. Traditionally, integrating LLMs with external tools and data has been a challenge. Let's say you’re building an AI-powered assistant for your organization that needs to:
 
 - Fetch product details from database
 - Access internal tools like CRMs or support ticket systems
@@ -40,7 +40,7 @@ With MCP, AI applications gain real-time, context-aware intelligence without the
 ## Spring AI's Adoption of MCP
 
 Spring AI has swiftly adopted the Model Context Protocol (MCP), making it easier for developers to integrate LLMs with diverse data sources and services. 
-Instead of manually managing multiple API calls or writing custom integrations, Spring AI MCP abstracts away this complexity, allowing LLMs to interact seamlessly with external tools—without requiring low-level logic.
+Instead of manually managing multiple API calls or writing custom integrations, Spring AI MCP abstracts away this complexity, allowing LLMs to interact seamlessly with external tools — without requiring low-level logic.
 
 This bridges the gap between Generative AI and real-time data, making it much simpler to create intelligent, context-aware applications.
 With Spring AI MCP, developers can focus on business logic while the framework efficiently manages system interactions.
@@ -137,6 +137,8 @@ Run the application and see how the LLM responds with some engaging outputs.
 
 Now that we've built a basic chat client, let's take this a step further by leveraging AI to summarize real-world data — starting with GitHub activity tracking. We'll track recent commits, open pull requests, and issues for a repository and create a concise summary.
 
+For this example, we’ll summarize the GitHub activity of the [blogging-platform](https://github.com/venkat-vmv/blogging-platform.git) repository.
+
 #### How would we achieve this?
 
 We would either manually fetch data from GitHub by authenticating and calling GitHub APIs or use an available API server that abstracts these operations. Regardless, we still need to:
@@ -175,7 +177,9 @@ This approach is manual, time-consuming, and difficult to scale, especially when
 Now, let’s see how MCP resolves these challenges by offering a standardized way for LLMs to fetch real-time data from external services without manual intervention.
 
 ## Integrating MCP Tools with Spring AI
-Instead of manually orchestrating API calls to fetch and feed data into prompts, we configure MCP tools that dynamically fetch and process relevant data on demand. With Spring AI MCP, we no longer need to hardcode data-fetching logic. Let’s explore how Spring AI MCP simplifies integration by leveraging Spring’s dependency injection and configuration management to seamlessly configure MCP clients and servers.
+Instead of manually orchestrating API calls to fetch and feed data into prompts, we configure MCP tools that dynamically fetch and process relevant data on demand. With Spring AI MCP, we no longer need to hardcode data-fetching logic.
+
+Let’s explore how Spring AI MCP simplifies integration by leveraging Spring’s dependency injection and configuration management to seamlessly configure MCP clients and servers.
 
 In this example, we will use the publicly available [GitHub MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/github), which acts as a bridge to the GitHub API. It enables repository management, file operations, and search functionality while exposing these features as MCP tools that the LLM can understand.
 
@@ -202,6 +206,7 @@ Add the below Spring AI MCP Client dependency to your `pom.xml`:
 ### 3.Configuring MCP Clients
 
 Spring AI MCP simplifies tool integration through a JSON configuration file.
+The MCP client needs to start and communicate with the MCP server, which runs as a separate process on your local machine. This configuration tells the MCP client where the server is, how to start it, and what environment variables it needs.
 
 Create `mcp-servers-config.json`:
 
@@ -221,6 +226,8 @@ Create `mcp-servers-config.json`:
   }
 }
 ```
+
+This tells the MCP client how to start the GitHub MCP server using npx, along with the required authentication details.
 
 **Environment Variables:** The `GITHUB_PERSONAL_ACCESS_TOKEN` is required to authenticate and interact with Github APIs.
 You can choose one of the following methods to set the environment variable:
@@ -273,7 +280,7 @@ With our MCP clients setup, the next step is integrating them with Spring AI’s
 ```
 
 #### Fully Automated Function Callbacks
-Spring AI MCP Clients auto-discovers tools exposed by MCP servers and registers them as function callbacks. We simply pass these tools into the ChatClient using Spring's dependency injection:
+Spring AI MCP Clients auto-discovers tools exposed by MCP servers and registers them as function callbacks. We simply pass these tools into the ChatClient using Spring's dependency injection.
 The LLM now has access to all registered MCP tools, allowing it to dynamically decide when and how to invoke them, removing the need for developers to manually orchestrate these interactions.
 
 **Note**: While tool calling seems like a LLM model responsibility, it is actually the client application that executes tool calls.
@@ -284,7 +291,7 @@ This separation ensures secure execution, as the AI model never directly interac
 ### 5. Generating the Daily GitHub Summary
 
 Now that we have everything set up — MCP clients, server configurations, tool callbacks, and the chatClient — it’s time to build our application logic.
-Our goal is to generate a daily summary of GitHub activity. To achieve this, we define a scheduled task that sends a prompt to summarize a repository’s commits, pull requests, and issues.
+Our goal is to generate a daily summary of GitHub activity. To achieve this, we define a scheduled task that sends a prompt to summarize the commits, pull requests, and issues of the [blogging-platform](https://github.com/venkat-vmv/blogging-platform) repository.
 
 ```java
 @Scheduled(cron = "0 0 8 * * *") // Runs every day at 8:00 AM
@@ -486,7 +493,7 @@ Once integrated, the final output is a well-structured Slack message posted auto
 
 Now, we saw how MCP is not just about retrieving data, it also enables executing actions through tools. In our Slack integration, we don’t just fetch data but we also invoke a tool to post the summarized GitHub activity directly to a Slack channel. This demonstrates actionable AI, where LLMs go beyond insights and trigger real-world operations seamlessly.
 
-#### Summary: What We Built with Spring AI MCP
+### Summary: What We Built with Spring AI MCP
 We built an AI-powered assistant that keeps teams informed about GitHub repository activity and automates Slack notifications. 
 
 Here’s an architecture diagram illustrating how different MCP components interact to get a better understanding:
