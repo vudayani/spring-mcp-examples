@@ -54,6 +54,7 @@ GitHub Lens is powered by Spring MCP, enabling seamless interaction between GitH
 ```
 
 3. Configure MCP Servers
+
 Spring AI MCP simplifies MCP client setup by using Spring boot's auto-configuration to setup the MCP client.
 
 Let us take a look at our configuration for Github and Slack MCP servers. Instead of manually defining MCP clients in Java, we simply configure them in an external file (`mcp-servers-config.json`) as below:
@@ -68,20 +69,20 @@ Let us take a look at our configuration for Github and Slack MCP servers. Instea
         "@modelcontextprotocol/server-github"
       ],
       "env": {
-		  "GITHUB_PERSONAL_ACCESS_TOKEN": "your-api-key",
+         "GITHUB_PERSONAL_ACCESS_TOKEN": "your-api-key",
       }
     },
-	 "slack": {
-	   "command": "npx",
-	   "args": [
-	     "-y",
-	     "@modelcontextprotocol/server-slack"
-	   ],
-	   "env": {
-		  "SLACK_BOT_TOKEN": "slack-bot-token",
-        "SLACK_TEAM_ID": "slack-team-id"
-	   }
-	 }
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+         "SLACK_BOT_TOKEN": "slack-bot-token",
+         "SLACK_TEAM_ID": "slack-team-id"
+      }
+    }
   }
 }
 ```
